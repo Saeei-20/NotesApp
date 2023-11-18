@@ -9,12 +9,15 @@ import {
   makeStyles,
   alpha,
 } from '@material-ui/core';
+
 import SearchIcon from '@mui/icons-material/Search';
 
 import PushPinIcon from '@mui/icons-material/PushPin';
 
 import ShareIcon from '@mui/icons-material/Share';
 import SettingsIcon from '@mui/icons-material/Settings';
+// import AddIcon from "@material-ui/icons/Add";
+// import DeleteIcon from "@material-ui/icons/Delete";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -52,6 +55,7 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
     width: '100%',
   },
+  
 }));
 
 const Navbar = () => {
@@ -76,7 +80,7 @@ const Navbar = () => {
             <SearchIcon />
           </div>
           <InputBase
-            placeholder="Search..."
+            placeholder="Search Note"
             classes={{
               root: classes.inputRoot,
               input: classes.inputInput,
@@ -87,7 +91,7 @@ const Navbar = () => {
         <div>
           <Avatar alt="User Avatar" src="/path/to/avatar.jpg" />
           <Typography variant="subtitle1" color="inherit" style={{ marginLeft: 10 }}>
-            User_name {/* Replace with the actual user name */}
+            CSI MIT WPU
           </Typography>
         </div>
       </Toolbar>

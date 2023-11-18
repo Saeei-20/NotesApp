@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@material-ui/icons/Delete";
+import PushPinIcon from "@mui/icons-material/PushPin";
+
 import { Card, CardContent, makeStyles,  Fab, Button } from "@material-ui/core";
 import { v4 as uuidv4 } from "uuid";
+
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -18,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom:"20px",
     width: 200,
     height: "80vh",
-    background: "linear-gradient(180deg, #2E3192 7%, #00C8C8 100%)",
+    background: "linear-gradient(20deg, #2E3192 7%, #00C8C8 100%)",
     borderRadius: "30px 30px 30px 30px",
     padding: theme.spacing(2),
   },
@@ -26,7 +29,8 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     padding: theme.spacing(2),
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",  // Display cards in a row
+    flexWrap: "wrap",
     alignItems: "flex-start",
     gap:"20px"
   },
@@ -72,6 +76,20 @@ const useStyles = makeStyles((theme) => ({
     gap:"30px",
     margin: theme.spacing(2, 0),
   },
+  cardContainer: {
+    display: "flex",
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "flex-start",
+    gap: "20px",
+  },
+  pinIcon: {
+    position: "absolute",
+    top: theme.spacing(1),
+    left: theme.spacing(1),
+    cursor: "pointer",
+  },
+
 }));
 
 const getRandomColor = () => {
@@ -88,14 +106,24 @@ const Note = () => {
   const [cards, setCards] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
 
+  const togglePin = (id) => {
+    setCards((prevCards) =>
+      prevCards.map((card) =>
+        card.id === id ? { ...card, pinned: !card.pinned } : card
+      )
+    );
+  };
+
   const addCard = () => {
     const newCard = {
       id: uuidv4(),
-      content: "Write your note here",
+      content: "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Write your note here ",
       color: getRandomColor(),
+      pinned: false, // Add a pinned property to your card
     };
     setCards((prevCards) => [...prevCards, newCard]);
   };
+ 
 
   const deleteCard = (id) => {
     setCards((prevCards) => prevCards.filter((card) => card.id !== id));
@@ -111,6 +139,7 @@ const Note = () => {
     setCards((prevCards) =>
       prevCards.map((card) =>
         card.id === id ? { ...card, content: newContent } : card
+        //card.id === id ? { ...card, content: newContent || "Write your note here" } : card
       )
     );
     setEditableCardId(null);
@@ -134,6 +163,7 @@ const Note = () => {
       <div className={classes.mainContainer}>
         <div className={classes.rectangle2}>
         <div className={classes.categoryButtons}>
+          
             <Button
               variant={selectedCategory === "all" ? "contained" : "outlined"}
               onClick={() => handleCategoryChange("all")}
@@ -158,22 +188,39 @@ const Note = () => {
           </Fab>
         </div>
         <div className={classes.contentContainer}>
+
+          
       {cards.map((card) => (
+
+        
             <Card
               key={card.id}
               className={editableCardId === card.id ? classes.cardEditable : classes.card}
-              style={{ backgroundColor: card.color }}
+              style={{ backgroundColor: card.color, width: '350px', height: '120px', marginBottom: '4px',position: "relative",  }}
               onClick={() => startEditing(card.id)}
             >
+              
+
               <DeleteIcon
                 className={classes.deleteIcon}
                 onClick={() => deleteCard(card.id)}
+              />
+              <PushPinIcon
+                className={classes.pinIcon}
+                onClick={() => togglePin(card.id)}
+                //style={{ position: "absolute", top: theme.spacing(1), left: theme.spacing(1), cursor: "pointer" }}
+                style={{
+                  color: card.pinned ? "yellow" : "inherit", position: "absolute"
+                }}
               />
               <CardContent>
                 <div
                   className={classes.content}
                   contentEditable={editableCardId === card.id}
-                  dangerouslySetInnerHTML={{ __html: card.content }}
+                  //dangerouslySetInnerHTML={{ __html: card.content }}
+                  dangerouslySetInnerHTML={{
+                    __html: card.content.replace(/&nbsp;/g, '\u00a0'),
+                  }}
                   onBlur={(e) => saveChanges(card.id, e.target.innerHTML)}
                 />
               </CardContent>
